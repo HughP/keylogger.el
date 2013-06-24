@@ -3,7 +3,12 @@
 import sys
 import os
 
-INFILE  = sys.argv[1] if len(sys.argv) > 1 else os.path.expanduser("~/.emacs.d/keys")
+'''
+Transforms two lists in `keys` into a format that may be easily read by other 
+scripts.
+'''
+
+INFILE  = sys.argv[1] if len(sys.argv) > 1 else os.path.expanduser("~/.emacs.d/mdickens/keylogger.el/keys")
 OUTFILE = sys.argv[2] if len(sys.argv) > 2 else "keys.jsonp"
 
 with open(INFILE) as f:
