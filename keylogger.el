@@ -1,10 +1,13 @@
 ; 256 * Last-key + Next-key
 
+;; IMPORTANT: *keylayouts* and *current-keylayout* must be defined
+;; before this file is loaded.
+
 (defcustom every-key-press-filenames 
   (mapcar 
    (lambda (layout) 
      `(,layout . ,(concat "~/.emacs.d/mdickens/keylogger.el/keys-"
-			  (string layout))))
+   			  (symbol-name layout))))
    *keylayouts*)
   "File in which to store the state of all of the key strokes
   you've ever made.  Must be writable and readable.")
@@ -18,8 +21,8 @@
 (defvar *key-press-times*  
   (mapcar
    (lambda (layout)
-     `(,layout . ,(make-vector *key-table-size* 0.0))
-     *keylayouts*))
+     `(,layout . ,(make-vector *key-table-size* 0.0)))
+   *keylayouts*)
   "This table stores the total seconds used in the
   inter-keystroke timing for each pair of keys.  The key
   transition i -> j has index (i - 32) * 96 + (j - 32); thus
@@ -28,8 +31,8 @@
 (defvar *key-press-counts* 
   (mapcar
    (lambda (layout)
-     `(,layout . ,(make-vector *key-table-size* 0))
-     *keylayouts*))
+     `(,layout . ,(make-vector *key-table-size* 0)))
+   *keylayouts*)
   "This table stores the total number of times each key
   transition has occured.  The indexing scheme is the same as
   that for `*key-press-counts*`")
@@ -146,8 +149,9 @@
 	  (push `(,layout . ,(make-vector *key-table-size* 0))
 		*key-press-counts*))))))
 
-;; Suggested initialization routine. -Michael
-(load-every-key-press)
-(autosave-every-key-press)
-(remember-every-key-press)
-(add-hook 'kill-emacs-hook 'save-every-key-press)
+(defun keylogger-init ()
+  "Suggested initialization routine. -Michael"
+  (load-every-key-press)
+  (autosave-every-key-press)
+  (remember-every-key-press)
+  (add-hook 'kill-emacs-hook 'save-every-key-press))
